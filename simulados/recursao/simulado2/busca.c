@@ -26,35 +26,51 @@ int e_fibonacci(int x)
     return e_quadrado_perfeito(5 * x * x + 4) || e_quadrado_perfeito(5 * x * x - 4);
 }
 
-int divisivel_por_outros(int divisivel, int teste)
+/*
+int fibonacci(int numero1, int numero2, int n)
 {
-    if (teste < divisivel && divisivel % teste != 0)
+    if (n == numero1)
     {
-        // o teste ainda não alcançou o valor do n° "divisivel"
-        return divisivel_por_outros(divisivel, teste + 1);
+        return 1;
     }
-    else if (teste >= divisivel && divisivel % teste == 0)
+
+    if (numero1 > n)
     {
-        // não é divisível
         return 0;
     }
-    else
+
+    return fibonacci(numero2, numero1 + numero2, n);
+}
+*/
+
+int primo(int num, int divisor)
+{
+    // Caso base: se o divisor se tornar 1, o número é primo
+    if (divisor == 1)
     {
-        // é divisível por algum número
-        return 1;
+        return 1; // Verdadeiro (primo)
     }
+
+    // Se o número é divisível pelo divisor atual, não é primo
+    if (num % divisor == 0)
+    {
+        return 0; // Falso (não é primo)
+    }
+
+    // Chama a função recursivamente com o próximo divisor
+    return is_prime_recursive(num, divisor - 1);
 }
 
-int e_primo(int numero)
+int e_primo(int num)
 {
-    // Caso o número não seja divisível por nenhum outro além de si mesmo e de 1, ele é primo
-    // Começamos verificando a divisão por 2, visto que os n°s primos são maiores que 1
-    if (numero > 1 && !divisivel_por_outros(numero, 2))
+    // Trata o caso especial para números menores que 2
+    if (num <= 1)
     {
-        return 1;
-    };
+        return 0; // Falso (não é primo)
+    }
 
-    return 0;
+    // Inicia a verificação recursiva a partir do divisor máximo (num - 1)
+    return is_prime_recursive(num, num - 1);
 }
 
 int e_perfeito(int numero)
