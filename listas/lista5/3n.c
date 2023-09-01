@@ -1,57 +1,90 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-// Robson se juntou a outros 20 funcionários para dividir o valor
-// Ele encontrou a árvore prefeita e três tipos de enfeites
-// Calcule e exiba o total gasto e o valor a ser pago por cada funcionário do setor.
-
-/*
-    -> Formato de entrada: Números reais no seguinte formato:
-    A primeira linha contém o valor da arvore;
-    Seguem duas linhas para cada tipo de enfeite, contendo respectivamente sua quantidade (número inteiro) e seu valor (número real).
-
-    -> Formato de saída
-    Dois valores reais, cada um com duas casas decimais
-*/
-
-void loop(int index, int quantidades[3], double precos[3])
+int encontrar_max(int arr[], int n)
 {
-    if (index > 0)
+    // Caso base: Se o array tiver apenas um elemento, retornamos esse elemento
+    if (n == 1)
     {
-        scanf("%d %lf", &quantidades[index], &precos[index]);
-        return loop(index - 1, quantidades, precos);
+        return arr[0];
+    }
+
+    // Encontramos o maior valor no subarray excluindo o primeiro elemento
+    int subMax = encontrar_max(arr + 1, n - 1);
+
+    // Comparamos o maior valor no subarray com o primeiro elemento e retorne o maior dos dois
+    if (arr[0] > subMax)
+    {
+        return arr[0];
     }
     else
     {
-        return;
+        return subMax;
     }
 }
 
-int somatorio_array(int index, double array_precos[3], int array_quant[3])
+void teste(int n, int *quant)
 {
-    if (index == 0)
+    *quant += 1;
+
+    if (n == 1)
     {
-        return 0;
+        return;
     }
     else
     {
-        return (array_precos[index] * array_quant[index]) + somatorio_array(index - 1, array_precos, array_quant);
+        // printf("n atual: %d\n", n);
+        return teste(n % 2 == 0 ? (n / 2) : ((n * 3) + 1), quant);
     }
+}
+
+void calcular_ciclos_da_linha(int atual, int maximo, int array_tamanho_dos_ciclos[])
+{
+    if (atual <= maximo)
+    {
+
+        // Verificamos quantos ciclos foram necessários para a linha atual
+        int tamanho_do_ciclo = 0;
+        teste(atual, &tamanho_do_ciclo);
+
+        // printf("Tamanho do ciclo: %d\n", tamanho_do_ciclo);
+
+        // Atualizamos na array
+        array_tamanho_dos_ciclos[atual] = tamanho_do_ciclo;
+
+        return calcular_ciclos_da_linha(atual + 1, maximo, array_tamanho_dos_ciclos);
+    }
+
+    return;
+}
+
+void loop()
+{
+    int i, j;
+    int length = scanf("%d %d", &i, &j);
+
+    if (length == 2)
+    {
+        int array_tamanho_dos_ciclos[100000] = {1};
+
+        int min = fmin((int)i, (int)j);
+        int max = fmax((int)i, (int)j);
+
+        calcular_ciclos_da_linha(min, max, array_tamanho_dos_ciclos);
+
+        int n = sizeof(array_tamanho_dos_ciclos) / sizeof(array_tamanho_dos_ciclos[0]);
+        int maior = encontrar_max(array_tamanho_dos_ciclos, n);
+        printf("%d %d %d\n", i, j, maior);
+
+        return loop();
+    };
+
+    return;
 }
 
 int main()
 {
-    double valor_arvore;
-    scanf("%lf", &valor_arvore);
-
-    int quantidades[3] = {0, 0, 0};
-    double precos[3];
-
-    loop(3, quantidades, precos);
-
-    double total_gasto = valor_arvore + somatorio_array(3, precos, quantidades);
-    printf("%.2lf\n", total_gasto);
-    printf("%.2lf\n", total_gasto / 21);
-
+    loop();
     return 0;
 }

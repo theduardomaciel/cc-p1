@@ -1,79 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void comparation(int array[4], int posicao)
+static int compare(const void *a, const void *b)
 {
-    if (posicao < sizeof(*array))
+    if (*(double *)a > *(double *)b)
     {
-        // printf("Verificando se %d é maior que %d\n", array[posicao], array[posicao + 1]);
-
-        // Verificamos elemento por elemento da array e vamos atualizando o valor do maior e do menor
-        int atual = array[posicao];
-        int proximo = posicao == sizeof(*array) - 1 ? array[2] : array[posicao + 1]; // temos que tomar cuidado com o último elemento da array, pois ele não possui próximo
-
-        // maior
-        if (array[posicao] > proximo)
-        {
-            // printf("Sim, %d é o novo maior\n", atual);
-            array[posicao] = array[2];
-            array[2] = atual;
-        }
-
-        // menor
-        if (proximo < array[0])
-        {
-            // printf("e %d é o novo menor\n", proximo);
-            array[posicao + 1] = array[0];
-            array[0] = proximo;
-        }
-
-        return comparation(array, posicao + 1);
+        return 1;
+    }
+    else if (*(double *)a < *(double *)b)
+    {
+        return -1;
     }
     else
     {
-        // printf("Maior: %d\n", array[2]);
-        // printf("Menor: %d\n", array[0]);
-
-        int index1 = array[1];
-        int index3 = array[3];
-
-        // Só precisamos descobrir quem são o segundo e o terceiro maior
-        if (index1 > index3)
-        {
-            array[1] = index1;
-            array[3] = index3;
-        }
-        else
-        {
-            array[1] = index3;
-            array[3] = index1;
-        }
-
-        // Já temos os valores do maior e do menor
-        return;
+        return 0;
     }
 }
 
-void print_array(int index, int array[4])
+void print_array(int index, double array[4])
 {
-    if (index < sizeof(*array))
+    if (index < 4)
     {
-        printf("%.2lf\n", (double)array[index]);
-        print_array(index + 1, array);
+        printf("%.2lf\n", array[index]);
+        return print_array(index + 1, array);
     }
+
     return;
 }
 
-int main()
+double main()
 {
-    int num1, num2, num3, num4;
-    scanf("%d %d %d %d", &num1, &num2, &num3, &num4);
+    double num1, num2, num3, num4;
+    scanf("%lf %lf %lf %lf", &num1, &num2, &num3, &num4);
 
-    int base_array[4] = {num1, num2, num3, num4};
+    double base_array[4] = {num1, num2, num3, num4};
+    qsort(base_array, 4, sizeof(base_array[0]), compare);
 
-    comparation(base_array, 0);
+    // Aplicamos as regras particulares de Ambrosina
+    double new_array[4];
+    new_array[0] = base_array[0]; // a pessoa mais baixa deve ficar sempre no index 0
+    new_array[3] = base_array[1]; // a segunda mais baixa deve ficar no index 3 (última posição)
+    new_array[1] = base_array[2]; // logo após a mais baixa (0 + 1 = index 1), fica a terceira mais baixa
+    new_array[2] = base_array[3]; // em seguida a mais alta
 
-    print_array(0, base_array);
+    print_array(0, new_array);
 
     return 0;
 }
