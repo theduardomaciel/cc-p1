@@ -19,43 +19,38 @@ int main()
     char *sum_string = (char *)malloc(base_size * sizeof(char) + 1);
     sum_string[base_size] = '\0';
 
-    printf("Tamanho da array da soma resultante: %ld\n", base_size);
+    // printf("Tamanho da array da soma resultante: %ld\n", base_size);
 
     int carry = 0;
+
     for (int index = (base_size - 1); index >= 0; index--)
     {
-        printf("index: %d, length A: %d, length B: %d\n", index, length_A, length_B);
+        // printf("index: %d, length A: %d, length B: %d\n", index, length_A, length_B);
 
-        int numberA = numberA_string[index] - '0' + carry;
-        int numberB = numberB_string[index] - '0' + carry;
+        int numberA = 0, numberB = 0;
 
-        if (index < length_B - length_A)
+        if (length_A > 0)
         {
-            numberA = 0;
-        }
-        else if (index > length_A)
-        {
-            numberA = numberA_string[index - (length_B - length_A)] - '0';
-        }
-        else if (index == length_A)
-        {
-            numberA = 0;
+            numberA = numberA_string[length_A - 1] - '0';
+            length_A--;
         }
 
-        if (index > length_B && index < length_A - length_B)
+        if (length_B > 0)
         {
-            numberB = 0;
-        }
-        else if (index > length_B)
-        {
-            numberB = numberB_string[index - (length_A - length_B)] - '0';
-        }
-        else if (index == length_B)
-        {
-            numberB = 0;
+            numberB = numberB_string[length_B - 1] - '0';
+            length_B--;
         }
 
-        printf("A: %d, B: %d\n", numberA, numberB);
+        if (length_A > length_B)
+        {
+            numberA += carry;
+        }
+        else
+        {
+            numberB += carry;
+        }
+
+        // printf("A: %d, B: %d\n", numberA, numberB);
 
         if (numberA + numberB > 9)
         {
@@ -73,8 +68,8 @@ int main()
             // Caso não, somamos normalmente
             sum_string[index] = (numberA + numberB) + '0';
         }
-        printf("O valor de sum_string[%d] é %c\n", index, sum_string[index]);
-        printf("------------------------------------\n");
+        // printf("O valor de sum_string[%d] é %c\n", index, sum_string[index]);
+        // printf("------------------------------------\n");
     }
 
     if (carry == 1)
